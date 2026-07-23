@@ -12,9 +12,10 @@ Node.js SDK for OGEagleEye (Node 18+). Ask your **system admin** for:
 ## Install
 
 ```bash
-npm install github:muazzambaaboo/ogeagleeye-monitor-node#master
+npm install @ogeagleeye/monitor-node
 ```
 
+Package: [npmjs.com/package/@ogeagleeye/monitor-node](https://www.npmjs.com/package/@ogeagleeye/monitor-node)
 ## Setup
 
 1. Get the **ingest key** and **endpoint** from your system admin.
@@ -64,3 +65,41 @@ app.use(ogEagleEyeErrorHandler());
 ```
 
 That is enough for basic error reporting.
+
+## Heartbeat
+
+Heartbeats are **opt-in**. Error reporting does **not** send them. Until this app sends heartbeats, the OGEagleEye panel shows **Heartbeat: none**.
+
+```js
+import { init, heartbeat, flush } from '@ogeagleeye/monitor-node';
+
+init({
+  key: process.env.OGEAGLEEYE_KEY,
+  endpoint: process.env.OGEAGLEEYE_ENDPOINT,
+});
+
+heartbeat();
+await flush();
+```
+
+Schedule that on **this** host (for example every minute via cron) so the platform can detect a silent outage.
+
+## Scanning
+
+Scans run **on this app’s server** (not on the OGEagleEye platform). The SDK checks local files, then POSTs a `scan_result` to your endpoint. The platform stores Scan reports and can alert on critical findings.
+
+This is an integrity helper — **not** an antivirus (Node has no PHP heuristics).
+
+```js
+import { init, scan, flush } from '@ogeagleeye/monitor-node';
+
+init({
+  key: process.env.OGEAGLEEYE_KEY,
+  endpoint: process.env.OGEAGLEEYE_ENDPOINT,
+});
+
+scan(['src', 'public'], { root: process.cwd() });
+await flush();
+```
+
+Run it from cron / a scheduled job on **this** host (for example daily). More detail: [docs/scanning.md](docs/scanning.md).
