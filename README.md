@@ -16,6 +16,7 @@ npm install @ogeagleeye/monitor-node
 ```
 
 Package: [npmjs.com/package/@ogeagleeye/monitor-node](https://www.npmjs.com/package/@ogeagleeye/monitor-node)
+
 ## Setup
 
 1. Get the **ingest key** and **endpoint** from your system admin.
